@@ -10,11 +10,11 @@ scale 1.2
 hide stereotype
 
 legend right
-|= Cable Class |= Color |
-| Normal XLR | #2ECC71 |
-| Long XLR (50 ft) | #3498DB |
-| Long XLR + adapter | #E67E22 |
-| Short XLR + adapter | #9B59B6 |
+|= Cable Class |= Swatch |
+| Normal XLR | <#2ECC71>  |
+| Long XLR (50 ft) | <#3498DB>  |
+| Long XLR + adapter | <#E67E22>  |
+| Short XLR + adapter | <#9B59B6>  |
 endlegend
 
 package "Stage" {
