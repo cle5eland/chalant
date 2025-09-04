@@ -1,7 +1,7 @@
 @startuml cables
 title Event Audio Cabling
 
-left to right direction
+top to bottom direction
 skinparam linetype ortho
 skinparam defaultTextAlignment center
 skinparam nodesep 100
@@ -10,8 +10,11 @@ scale 1.2
 hide stereotype
 
 legend right
-|= Cable |= Color |
-| XLR (signal) | green |
+|= Cable Class |= Color |
+| Normal XLR | #2ECC71 |
+| Long XLR (50 ft) | #3498DB |
+| Long XLR + adapter | #E67E22 |
+| Short XLR + adapter | #9B59B6 |
 endlegend
 
 package "Stage" {
@@ -31,31 +34,31 @@ package "Back of Dancefloor (FOH)" {
 }
 
 ' Mic 1 into DJ Decks
-MIC_DJ -[#green]-> DJ : XLR
+MIC_DJ -[#2ECC71]-> DJ : XLR (normal)
 
 ' DJ Decks to Mixer (L/R) via 50 ft XLR with 1/4" adapters
-DJ -[#green]-> MIX : Left • 50 ft XLR + 1/4" adapter
-DJ -[#green]-> MIX : Right • 50 ft XLR + 1/4" adapter
+DJ -[#E67E22]-> MIX : Left • 50 ft XLR + 1/4" adapter
+DJ -[#E67E22]-> MIX : Right • 50 ft XLR + 1/4" adapter
 
 ' Guitar amp mic direct to Mixer with phantom power
-MIC_GTR -[#green]-> MIX : 50 ft XLR (phantom power)
+MIC_GTR -[#3498DB]-> MIX : 50 ft XLR (phantom power)
 MIC_GTR .. GTR_AMP : placed in front
 
 ' Mixer to Sub 1 (L/R) via 50ft XLRs
-MIX -[#green]-> SUB1 : Left • 50 ft XLR
-MIX -[#green]-> SUB1 : Right • 50 ft XLR
+MIX -[#3498DB]-> SUB1 : Left • 50 ft XLR
+MIX -[#3498DB]-> SUB1 : Right • 50 ft XLR
 
 ' Sub 1 to Sub 2 (L/R) via short XLRs
-SUB1 -[#green]-> SUB2 : Left • short XLR
-SUB1 -[#green]-> SUB2 : Right • short XLR
+SUB1 -[#2ECC71]-> SUB2 : Left • short XLR
+SUB1 -[#2ECC71]-> SUB2 : Right • short XLR
 
 ' Sub 2 to Tops
-SUB2 -[#green]-> PA_L : Left • 1 XLR
-SUB2 -[#green]-> PA_R : Right • 1 XLR
+SUB2 -[#2ECC71]-> PA_L : Left • 1 XLR
+SUB2 -[#2ECC71]-> PA_R : Right • 1 XLR
 
 ' DJ Decks to Booth Monitor (stereo) via XLR with 1/4" adapters
-DJ -[#green]-> BOOTH : Left • XLR + 1/4" adapter
-DJ -[#green]-> BOOTH : Right • XLR + 1/4" adapter
+DJ -[#9B59B6]-> BOOTH : Left • XLR + 1/4" adapter
+DJ -[#9B59B6]-> BOOTH : Right • XLR + 1/4" adapter
 
 note right of MIC_GTR
 Enable phantom power on this
