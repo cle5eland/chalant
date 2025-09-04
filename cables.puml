@@ -4,6 +4,9 @@ title Event Audio Cabling
 left to right direction
 skinparam linetype ortho
 skinparam defaultTextAlignment center
+skinparam nodesep 100
+skinparam ranksep 150
+scale 1.2
 hide stereotype
 
 legend right
