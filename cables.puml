@@ -1,47 +1,62 @@
 @startuml cables
-title PA Sound System Cabling
+title Event Audio Cabling
 
 left to right direction
 skinparam linetype ortho
+skinparam defaultTextAlignment center
+hide stereotype
 
 legend right
-|= Type |= Color |
-| Mic (XLR) | green |
-| Line (TRS/RCA) | blue |
-| Speaker | red |
+|= Cable |= Color |
+| XLR (signal) | green |
 endlegend
 
-package "Front of House" {
+package "Stage" {
+  [DJ Mic] as MIC_DJ
   [DJ Decks] as DJ
+  [Guitar Amp] as GTR_AMP
+  [Guitar Amp Mic] as MIC_GTR
+  [Subwoofer 1] as SUB1
+  [Subwoofer 2] as SUB2
+  [PA Left] as PA_L
+  [PA Right] as PA_R
+  [Booth Monitor] as BOOTH
+}
+
+package "Back of Dancefloor (FOH)" {
   [Mixer] as MIX
 }
 
-package "Stage" {
-  [Amp] as AMP
-  [PA Left] as PA_L
-  [PA Right] as PA_R
-  [Subwoofer Left] as SUB_L
-  [Subwoofer Right] as SUB_R
-  [Guitar Amp] as GTR_AMP
-  [Vocal Mic] as MIC_VOC
-  [Guitar Amp Mic] as MIC_GTR
-}
+' Mic 1 into DJ Decks
+MIC_DJ -[#green]-> DJ : XLR
 
-' Inputs to Mixer
-DJ -[#blue]-> MIX : Stereo L/R
-MIC_VOC -[#green]-> MIX : XLR
-MIC_GTR -[#green]-> MIX : XLR
+' DJ Decks to Mixer (L/R) via 50 ft XLR with 1/4" adapters
+DJ -[#green]-> MIX : Left • 50 ft XLR + 1/4" adapter
+DJ -[#green]-> MIX : Right • 50 ft XLR + 1/4" adapter
 
-' Mixer to System Amp
-MIX -[#blue]-> AMP : Main L/R
+' Guitar amp mic direct to Mixer with phantom power
+MIC_GTR -[#green]-> MIX : 50 ft XLR (phantom power)
+MIC_GTR .. GTR_AMP : placed in front
 
-' Amp to Speakers
-AMP -[#red]-> PA_L : Speaker L
-AMP -[#red]-> PA_R : Speaker R
-AMP -[#red]-> SUB_L : Sub L
-AMP -[#red]-> SUB_R : Sub R
+' Mixer to Sub 1 (L/R) via 50ft XLRs
+MIX -[#green]-> SUB1 : Left • 50 ft XLR
+MIX -[#green]-> SUB1 : Right • 50 ft XLR
 
-' Visual hint: mic placed on guitar amp (no cable)
-MIC_GTR .. GTR_AMP : mic in front
+' Sub 1 to Sub 2 (L/R) via short XLRs
+SUB1 -[#green]-> SUB2 : Left • short XLR
+SUB1 -[#green]-> SUB2 : Right • short XLR
+
+' Sub 2 to Tops
+SUB2 -[#green]-> PA_L : Left • 1 XLR
+SUB2 -[#green]-> PA_R : Right • 1 XLR
+
+' DJ Decks to Booth Monitor (stereo) via XLR with 1/4" adapters
+DJ -[#green]-> BOOTH : Left • XLR + 1/4" adapter
+DJ -[#green]-> BOOTH : Right • XLR + 1/4" adapter
+
+note right of MIC_GTR
+Enable phantom power on this
+mixer input for the mic.
+end note
 
 @enduml
