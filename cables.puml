@@ -1,20 +1,47 @@
 @startuml cables
-title Activity Diagram Example
+title PA Sound System Cabling
 
-start
+left to right direction
+skinparam linetype ortho
 
-:Initialize system;
-:Check cable connections;
+legend right
+|= Type |= Color |
+| Mic (XLR) | green |
+| Line (TRS/RCA) | blue |
+| Speaker | red |
+endlegend
 
-if (Cables connected?) then (yes)
-    :Power on devices;
-    :Run diagnostics;
-else (no)
-    :Display error message;
-    stop
-endif
+package "Front of House" {
+  [DJ Decks] as DJ
+  [Mixer] as MIX
+}
 
-:Begin operation;
+package "Stage" {
+  [Amp] as AMP
+  [PA Left] as PA_L
+  [PA Right] as PA_R
+  [Subwoofer Left] as SUB_L
+  [Subwoofer Right] as SUB_R
+  [Guitar Amp] as GTR_AMP
+  [Vocal Mic] as MIC_VOC
+  [Guitar Amp Mic] as MIC_GTR
+}
 
-stop
+' Inputs to Mixer
+DJ -[#blue]-> MIX : Stereo L/R
+MIC_VOC -[#green]-> MIX : XLR
+MIC_GTR -[#green]-> MIX : XLR
+
+' Mixer to System Amp
+MIX -[#blue]-> AMP : Main L/R
+
+' Amp to Speakers
+AMP -[#red]-> PA_L : Speaker L
+AMP -[#red]-> PA_R : Speaker R
+AMP -[#red]-> SUB_L : Sub L
+AMP -[#red]-> SUB_R : Sub R
+
+' Visual hint: mic placed on guitar amp (no cable)
+MIC_GTR .. GTR_AMP : mic in front
+
 @enduml
