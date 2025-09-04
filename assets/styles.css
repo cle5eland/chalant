@@ -35,16 +35,18 @@ h1 {
 
 .layout {
   display: flex;
+  flex-direction: column;
   gap: 16px;
-  align-items: flex-start;
+  align-items: stretch;
 }
 
 .panel {
-  flex: 1 1 0;
+  /* Let content define height; avoid zero-height flex items */
+  flex: 0 0 auto;
   background: #fff;
   border: 1px solid var(--border);
   border-radius: 8px;
-  overflow: auto;
+  overflow: visible;
   padding: 12px;
 }
 
@@ -82,7 +84,4 @@ td:last-child { text-align: right; }
   margin-top: 8px;
 }
 
-@media (max-width: 900px) {
-  .layout { flex-direction: column; }
-}
-
+/* Stacked layout at all widths; no media overrides needed */
