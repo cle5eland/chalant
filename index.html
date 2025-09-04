@@ -1,147 +1,99 @@
-<img src="https://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/cle5eland/chalant/refs/heads/main/cables.puml" alt="Cables Diagram">
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Event Audio Cabling</title>
+    <link rel="stylesheet" href="assets/styles.css">
+  </head>
+  <body>
+    <div class="page">
+      <h1>Event Audio Cabling</h1>
+      <p class="subtle">Diagram and CSV-driven table side by side.</p>
 
-<div id="chart-container" style="max-width:900px;margin:24px auto;padding:0 16px;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif;color:#222;">
-  <h2 style="margin:0 0 12px;">Cable Counts</h2>
-  <p style="margin:0 0 16px;color:#555;">Visualization of <code>cable_counts.csv</code> (auto‑loaded).</p>
+      <div class="layout">
+        <div class="panel img-panel">
+          <img src="https://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/cle5eland/chalant/refs/heads/main/cables.puml" alt="Cables Diagram">
+        </div>
 
-  <div style="display:grid;grid-template-columns:1fr;gap:16px;align-items:start;">
-    <div style="overflow:auto;border:1px solid #eee;border-radius:8px;padding:12px;">
-      <svg id="cable-chart" width="100%" height="100" role="img" aria-label="Bar chart of cable counts"></svg>
+        <div class="panel">
+          <h2 style="margin:0 0 8px 0;">Cable Counts</h2>
+          <p class="subtle" style="margin-top:0;">Loaded from <code>cable_counts.csv</code>.</p>
+
+          <table id="cable-table">
+            <thead>
+              <tr>
+                <th>Cable Type</th>
+                <th>Count</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+          <div id="csv-error" class="error" style="display:none;">Could not load <code>cable_counts.csv</code>. If opening this file directly, serve via a local HTTP server.</div>
+        </div>
+      </div>
     </div>
 
-    <div style="overflow:auto;border:1px solid #eee;border-radius:8px;padding:12px;">
-      <table id="cable-table" style="width:100%;border-collapse:collapse;font-size:14px;">
-        <thead>
-          <tr>
-            <th style="text-align:left;padding:8px;border-bottom:1px solid #ddd;">Cable Type</th>
-            <th style="text-align:right;padding:8px;border-bottom:1px solid #ddd;">Count</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-      <div id="csv-error" style="display:none;margin-top:8px;color:#B00020;">Could not load <code>cable_counts.csv</code>. If opening this file directly, try serving via a local HTTP server.</div>
-    </div>
-  </div>
-</div>
+    <script>
+      (function () {
+        const csvUrl = 'cable_counts.csv';
+        const colorMap = {
+          'Normal XLR': '#2ECC71',
+          'Long XLR (50 ft)': '#3498DB',
+          'Long XLR + adapter': '#E67E22',
+          'Short XLR + adapter': '#9B59B6'
+        };
 
-<script>
-  (function () {
-    const csvUrl = 'cable_counts.csv';
-    const colorMap = {
-      'Normal XLR': '#2ECC71',
-      'Long XLR (50 ft)': '#3498DB',
-      'Long XLR + adapter': '#E67E22',
-      'Short XLR + adapter': '#9B59B6'
-    };
+        function parseCsv(text) {
+          const lines = text.trim().split(/\r?\n/).filter(Boolean);
+          if (!lines.length) return [];
+          const headers = lines[0].split(',').map(s => s.replace(/^"|"$/g, '').trim());
+          return lines.slice(1).map(line => {
+            const cols = line.split(',').map(s => s.replace(/^"|"$/g, '').trim());
+            const obj = {};
+            headers.forEach((h, i) => (obj[h] = cols[i]));
+            return obj;
+          });
+        }
 
-    function escapeHtml(str) {
-      return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
-    }
+        function renderTable(rows) {
+          const tbody = document.querySelector('#cable-table tbody');
+          tbody.innerHTML = '';
+          rows.forEach(r => {
+            const tr = document.createElement('tr');
+            const tdType = document.createElement('td');
+            const tdCount = document.createElement('td');
+            const color = colorMap[r.cable_type] || '#888';
 
-    function parseCsv(text) {
-      const lines = text.trim().split(/\r?\n/).filter(Boolean);
-      if (!lines.length) return [];
-      const headers = lines[0].split(',').map(s => s.replace(/^"|"$/g, '').trim());
-      return lines.slice(1).map(line => {
-        const cols = line.split(',').map(s => s.replace(/^"|"$/g, '').trim());
-        const obj = {};
-        headers.forEach((h, i) => (obj[h] = cols[i]));
-        return obj;
-      });
-    }
+            const swatch = document.createElement('span');
+            swatch.className = 'swatch';
+            swatch.style.background = color;
 
-    function renderTable(rows) {
-      const tbody = document.querySelector('#cable-table tbody');
-      tbody.innerHTML = '';
-      rows.forEach(r => {
-        const tr = document.createElement('tr');
-        const tdType = document.createElement('td');
-        const tdCount = document.createElement('td');
-        const color = colorMap[r.cable_type] || '#888';
+            tdType.appendChild(swatch);
+            tdType.appendChild(document.createTextNode(r.cable_type));
+            tdCount.textContent = r.count;
+            tr.appendChild(tdType);
+            tr.appendChild(tdCount);
+            tbody.appendChild(tr);
+          });
+        }
 
-        tdType.style.padding = '8px';
-        tdType.style.borderBottom = '1px solid #f0f0f0';
-        tdCount.style.padding = '8px';
-        tdCount.style.borderBottom = '1px solid #f0f0f0';
-        tdCount.style.textAlign = 'right';
+        fetch(csvUrl)
+          .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
+          .then(text => parseCsv(text))
+          .then(rows => {
+            rows = rows.map(r => ({
+              cable_type: r.cable_type || r.Cable_Type || r.type || r.Type,
+              count: r.count || r.Count || r.quantity || r.Quantity
+            })).filter(r => r.cable_type && r.count != null);
+            renderTable(rows);
+          })
+          .catch(err => {
+            console.error('Failed to load CSV:', err);
+            document.getElementById('csv-error').style.display = 'block';
+          });
+      })();
+    </script>
+  </body>
+  </html>
 
-        const swatch = document.createElement('span');
-        swatch.style.display = 'inline-block';
-        swatch.style.width = '12px';
-        swatch.style.height = '12px';
-        swatch.style.borderRadius = '3px';
-        swatch.style.marginRight = '8px';
-        swatch.style.verticalAlign = 'middle';
-        swatch.style.background = color;
-
-        tdType.appendChild(swatch);
-        tdType.appendChild(document.createTextNode(r.cable_type));
-        tdCount.textContent = r.count;
-        tr.appendChild(tdType);
-        tr.appendChild(tdCount);
-        tbody.appendChild(tr);
-      });
-    }
-
-    function renderChart(rows) {
-      const svg = document.getElementById('cable-chart');
-      const data = rows.map(r => ({
-        label: r.cable_type,
-        value: Number(r.count) || 0,
-        color: colorMap[r.cable_type] || '#888'
-      }));
-      const max = Math.max(1, ...data.map(d => d.value));
-
-      const left = 190; // room for labels
-      const right = 40;
-      const barH = 26;
-      const gap = 12;
-      const chartW = 520; // px
-      const height = gap + data.length * (barH + gap);
-      const width = left + chartW + right;
-
-      svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
-      svg.setAttribute('height', height);
-
-      const parts = [];
-      // background grid line at 0 and max
-      parts.push(`<line x1="${left}" y1="${gap/2}" x2="${left}" y2="${height - gap/2}" stroke="#eee"/>`);
-      parts.push(`<line x1="${left + chartW}" y1="${gap/2}" x2="${left + chartW}" y2="${height - gap/2}" stroke="#eee"/>`);
-
-      data.forEach((d, i) => {
-        const y = gap + i * (barH + gap);
-        const w = Math.round((d.value / max) * chartW);
-        parts.push(`<text x="10" y="${y + barH * 0.72}" fill="#333" font-size="14">${escapeHtml(d.label)}</text>`);
-        parts.push(`<rect x="${left}" y="${y}" width="${w}" height="${barH}" fill="${d.color}" rx="4" ry="4"></rect>`);
-        parts.push(`<text x="${left + w + 8}" y="${y + barH * 0.72}" fill="#333" font-size="14">${d.value}</text>`);
-      });
-
-      svg.innerHTML = parts.join('\n');
-    }
-
-    fetch(csvUrl)
-      .then(r => {
-        if (!r.ok) throw new Error('HTTP ' + r.status);
-        return r.text();
-      })
-      .then(text => parseCsv(text))
-      .then(rows => {
-        // Normalize keys in case of different header casing
-        rows = rows.map(r => ({
-          cable_type: r.cable_type || r.Cable_Type || r.type || r.Type,
-          count: r.count || r.Count || r.quantity || r.Quantity
-        })).filter(r => r.cable_type && r.count != null);
-        renderTable(rows);
-        renderChart(rows);
-      })
-      .catch(err => {
-        console.error('Failed to load CSV:', err);
-        document.getElementById('csv-error').style.display = 'block';
-      });
-  })();
-</script>
