@@ -1,0 +1,20 @@
+@startuml cables
+title Activity Diagram Example
+
+start
+
+:Initialize system;
+:Check cable connections;
+
+if (Cables connected?) then (yes)
+    :Power on devices;
+    :Run diagnostics;
+else (no)
+    :Display error message;
+    stop
+endif
+
+:Begin operation;
+
+stop
+@enduml
