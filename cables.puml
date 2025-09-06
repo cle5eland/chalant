@@ -14,7 +14,7 @@ legend right
 | Normal XLR | <#2ECC71>  |
 | Long XLR (50 ft) | <#3498DB>  |
 | Long XLR + adapter | <#E67E22>  |
-| Short XLR + adapter | <#9B59B6>  |
+| 1/4" Cable | <#9B59B6>  |
 endlegend
 
 package "Stage" {
@@ -56,9 +56,9 @@ SUB1 -[#2ECC71]-> SUB2 : Right • short XLR
 SUB2 -[#2ECC71]-> PA_L : Left • 1 XLR
 SUB2 -[#2ECC71]-> PA_R : Right • 1 XLR
 
-' DJ Decks to Booth Monitor (stereo) via XLR with 1/4" adapters
-DJ -[#9B59B6]-> BOOTH : Left • XLR + 1/4" adapter
-DJ -[#9B59B6]-> BOOTH : Right • XLR + 1/4" adapter
+' DJ Decks to Booth Monitor (stereo) via 1/4" cables
+DJ -[#9B59B6]-> BOOTH : Left • 1/4" cable
+DJ -[#9B59B6]-> BOOTH : Right • 1/4" cable
 
 note right of MIC_GTR
 Enable phantom power on this
